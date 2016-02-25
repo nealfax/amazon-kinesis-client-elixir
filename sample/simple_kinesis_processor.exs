@@ -3,6 +3,7 @@ defmodule SimpleKinesisClient do
 
   def process_record data do
     IO.puts "I got #{data}"
+    Logger.info "I got #{data}"
   end
 end
 

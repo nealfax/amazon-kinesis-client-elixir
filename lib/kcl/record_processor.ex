@@ -117,7 +117,7 @@ defmodule Kcl.RecordProcessor do
   end
 
   def current_time do
-    Date.now |> Date.convert(:secs)
+    Date.now |> Date.to_secs
   end
 
   def last_checkpoint_time do

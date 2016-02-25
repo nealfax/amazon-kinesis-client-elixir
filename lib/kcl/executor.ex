@@ -1,14 +1,14 @@
 defmodule Kcl.Executor do
   require Logger
   def run config do
-      [command | args] = Kcl.ExecutorCommandBuilder.build(
-        config_properties_path(config),
-        system_properties,
-        extra_class_path
-      )
-      Logger.info "execute command:\n#{command} #{Enum.join args, " "}"
-
-      System.cmd(command, args)
+    [command | args] = Kcl.ExecutorCommandBuilder.build(
+      config_properties_path(config),
+      system_properties,
+      extra_class_path
+    )
+    Logger.info "execute command:\n#{command} #{Enum.join args, " "}"
+    # todo: java process does not terminate on exit, need to fix this
+    System.cmd(command, args)
   end
 
   defp config_properties_path config do

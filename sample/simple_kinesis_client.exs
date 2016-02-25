@@ -1,5 +1,5 @@
 
-config = [stream_name: "test",
+config = [stream_name: "roa-dev",
   executable_name: "./sample/simple_kinesis_processor.sh",
   application_name: "ElixirKCLSample",
   max_records: 5,

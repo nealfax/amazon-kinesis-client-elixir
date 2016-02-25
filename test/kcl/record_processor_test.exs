@@ -53,7 +53,7 @@ defmodule Kcl.RecordProcessorTest do
     MyProcessor.init_processor 1234
 
     assert MyProcessor.state[:largest_seq] == nil
-    assert_in_delta MyProcessor.state[:last_checkpoint_time], (Date.now |> Date.convert(:secs)), 1
+    assert_in_delta MyProcessor.state[:last_checkpoint_time], (Date.now |> Date.to_secs), 1
   end
 
   test "forces checkpoint with largest_seq on error" do
