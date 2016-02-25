@@ -1,0 +1,9 @@
+/_build
+/cover
+/deps
+erl_crash.dump
+*.ez
+*sublime*
+**/.DS_Store
+**/.idea
+*.iml
