@@ -7,7 +7,12 @@ defmodule Kcl.RecordProcessorTest do
   defmodule MyProcessor do
     use Kcl.RecordProcessor
 
-    def process_record(data), do: "I got #{data}"
+    def process_record(data) do
+      {:ok, file} = File.open "test", [:write]
+      IO.binwrite file, "I got #{data}"
+      File.close file
+      "I got #{data}"
+    end
   end
 
   defmodule BrokenProcessor do

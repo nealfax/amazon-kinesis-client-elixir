@@ -1,9 +1,12 @@
 defmodule Kcl.IOProxy do
+  require Logger
   def initialize io_streams = [input: _, output: _, error: _] do
+    Logger.debug "initialising io streams"
     Agent.start_link(fn -> io_streams end, name: __MODULE__)
   end
 
   def read_line do
+    Logger.debug "Reading stream"
     do_read io_streams[:input]
   end
 

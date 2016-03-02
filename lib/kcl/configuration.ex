@@ -1,4 +1,6 @@
 defmodule Kcl.Configuration do
+  require Logger
+
   def properties options do
       default_config
       |> Dict.merge(options)
@@ -19,6 +21,8 @@ defmodule Kcl.Configuration do
   end
 
   defp default_config do
+    Logger.debug inspect processing_language
+    Logger.debug inspect executable_name
     [
       executable_name: executable_name,
       application_name: application_name,

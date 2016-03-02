@@ -15,12 +15,14 @@ defmodule Kcl.RecordProcessor do
       require Logger
 
       def initialize(options) do
+        Logger.info "Initialising processor"
         Kcl.RecordProcessor.initialize options
       end
 
       def process_records(records) do
         force_checkpoint = false
         try do
+          Logger.info "Reading records"
           Enum.map records, &(handle_record(&1))
         rescue
           e ->
@@ -32,6 +34,8 @@ defmodule Kcl.RecordProcessor do
       end
 
       def handle_record record do
+        Logger.debug "***************** Processing record from stream *****************"
+
         result = record["data"]
         |> Base.decode64!
         |> process_record
@@ -40,6 +44,7 @@ defmodule Kcl.RecordProcessor do
         |> parse_int
         |> update_largest_seq
 
+        Logger.info inspect result
         result
       end
 
@@ -55,7 +60,12 @@ defmodule Kcl.RecordProcessor do
         end
       end
 
-      def process_record(data), do: data
+      def process_record(data) do
+        {:ok, file} = File.open "recordprocessor", [:write]
+        IO.binwrite file, "I got #{data}"
+        File.close file
+        data
+      end
 
       def shutdown("TERMINATE") do
         Logger.info "Terminating, will attempt to checkpoint."

@@ -1,5 +1,6 @@
 defmodule Kcl.KCLProcess do
   alias Kcl.IOProxy
+  require Logger
 
   @default_options [
     input: :stdio,
@@ -8,6 +9,7 @@ defmodule Kcl.KCLProcess do
   ]
 
   def run(processor, options \\ @default_options) do
+    Logger.debug "Inside kcl run"
     options = Dict.merge(@default_options, options)
     options |> Dict.take([:input, :output, :error])
     |> IOProxy.initialize
@@ -21,6 +23,7 @@ defmodule Kcl.KCLProcess do
 
   defp process_line(nil, _), do: nil
   defp process_line(line, processor) do
+    Logger.info "Processing line"
     {:ok, action} = line |> JSX.decode
     case Map.get(action, "action") do
       "initialize" ->
@@ -33,6 +36,7 @@ defmodule Kcl.KCLProcess do
     end
     %{"action" => action_value} = action
     IOProxy.write_action("status", %{responseFor: action_value})
+    Logger.debug "Calling processor"
     process processor
   end
 end
