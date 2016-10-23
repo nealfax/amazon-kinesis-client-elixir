@@ -10,8 +10,8 @@ defmodule Kcl.KCLProcess do
 
   def run(processor, options \\ @default_options) do
     Logger.debug "Inside kcl run"
-    options = Dict.merge(@default_options, options)
-    options |> Dict.take([:input, :output, :error])
+    options = Keyword.merge(@default_options, options)
+    options |> Keyword.take([:input, :output, :error])
     |> IOProxy.initialize
 
     process processor

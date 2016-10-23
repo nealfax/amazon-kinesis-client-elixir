@@ -21,7 +21,7 @@ defmodule Kcl.ConfigurationTest do
     config_options = [
       dummy_key: 1,
       dummy_key_two: 'two'
-    ] |> Dict.merge(@required_options)
+    ] |> Keyword.merge(@required_options)
 
     properties = Kcl.Configuration.properties config_options
 
@@ -31,7 +31,7 @@ defmodule Kcl.ConfigurationTest do
   test "Can set AWSCredentialsProvider" do
     config_options = [
       aws_credentials_provider: 'Test'
-    ] |> Dict.merge @required_options
+    ] |> Keyword.merge @required_options
 
     properties = Kcl.Configuration.properties config_options
 
@@ -53,7 +53,7 @@ defmodule Kcl.ConfigurationTest do
     aws_credentials_provider initial_position_in_stream stream_name
     )
     |> Enum.each fn key_prop ->
-      config_options = Dict.merge(
+      config_options = Keyword.merge(
       @required_options,
       [{String.to_atom(key_prop), nil}]
       )

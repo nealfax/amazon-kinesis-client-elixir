@@ -4,7 +4,7 @@ defmodule Kclex.Mixfile do
   def project do
     [app: :kclex,
      version: "0.0.1",
-     elixir: "~> 1.2.2",
+     elixir: "~> 1.3",
      description: "An amazon kinesis KCL client for elixir.",
      deps: deps]
   end
@@ -13,7 +13,7 @@ defmodule Kclex.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger ]]
+    [applications: [:logger, :timex ]]
   end
 
   # Dependencies can be Hex packages:
@@ -31,7 +31,7 @@ defmodule Kclex.Mixfile do
       {:inflex, "~> 1.0.0"},
       {:radpath, "~> 0.0.5"},
       {:tempfile, github: "lowks/tempfile"},
-      {:timex, "~> 0.19.5"}
+      {:timex, "~> 3.0"}
     ]
   end
 end

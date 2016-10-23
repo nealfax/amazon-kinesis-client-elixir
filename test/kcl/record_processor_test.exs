@@ -8,7 +8,7 @@ defmodule Kcl.RecordProcessorTest do
     use Kcl.RecordProcessor
 
     def process_record(data) do
-      {:ok, file} = File.open "test", [:write]
+      {:ok, file} = File.open __DIR__ <> "/test.tmp", [:write]
       IO.binwrite file, "I got #{data}"
       File.close file
       "I got #{data}"
@@ -45,9 +45,9 @@ defmodule Kcl.RecordProcessorTest do
   end
 
   test "can set config on initialize" do
-    MyProcessor.initialize sleep_seconds: 10,
+    MyProcessor.initialize %{sleep_seconds: 10,
                             checkpoint_retries: 10,
-                            checkpoint_freq_seconds: 10
+                            checkpoint_freq_seconds: 10}
 
     assert MyProcessor.state[:sleep_seconds] == 10
     assert MyProcessor.state[:checkpoint_retries] == 10
@@ -58,7 +58,7 @@ defmodule Kcl.RecordProcessorTest do
     MyProcessor.init_processor 1234
 
     assert MyProcessor.state[:largest_seq] == nil
-    assert_in_delta MyProcessor.state[:last_checkpoint_time], (Date.now |> Date.to_secs), 1
+    assert_in_delta MyProcessor.state[:last_checkpoint_time], (Timex.now |> Timex.to_unix), 1
   end
 
   test "forces checkpoint with largest_seq on error" do
@@ -66,7 +66,7 @@ defmodule Kcl.RecordProcessorTest do
     IOProxy.initialize io
 
     records = [create_record("Break me")]
-    BrokenProcessor.initialize [largest_seq: 1234]
+    BrokenProcessor.initialize %{largest_seq: 1234}
     BrokenProcessor.process_records records
 
     assert content(io[:output]) == "{\"action\":\"checkpoint\",\"checkpoint\":1234}\n"
@@ -93,7 +93,7 @@ defmodule Kcl.RecordProcessorTest do
   test "checkpoint retries specified number of times" do
     io = open_io
     IOProxy.initialize io
-    MyProcessor.initialize checkpoint_retries: 3, largest_seq: 321
+    MyProcessor.initialize %{checkpoint_retries: 3, largest_seq: 321}
 
     BrokenProcessor.process_records [create_record("Force checkpoint")]
 

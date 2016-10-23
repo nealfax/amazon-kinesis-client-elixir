@@ -2,11 +2,11 @@ defmodule Kcl.RecordProcessor do
   alias Kcl.IOProxy
   use Timex
   require Logger
-  @default_options [
+  @default_options %{
     sleep_seconds: 5,
     checkpoint_retries: 5,
     checkpoint_freq_seconds: 60
-  ]
+  }
 
   defmacro __using__(_) do
     quote do
@@ -27,7 +27,7 @@ defmodule Kcl.RecordProcessor do
         rescue
           e ->
             force_checkpoint = true
-            Logger.error "Error while prcoessing records: #{inspect e}"
+            Logger.error "Error while processing records: #{inspect e}"
         after
           check_checkpoint force_checkpoint
         end
@@ -55,8 +55,8 @@ defmodule Kcl.RecordProcessor do
       def init_processor(_) do
         update fn state ->
           state
-          |> Dict.put(:largest_seq, nil)
-          |> Dict.put(:last_checkpoint_time, current_time)
+          |> Map.put(:largest_seq, nil)
+          |> Map.put(:last_checkpoint_time, current_time)
         end
       end
 
@@ -82,7 +82,7 @@ defmodule Kcl.RecordProcessor do
   end
 
   def initialize(options) do
-    Dict.merge(@default_options, options)
+    Map.merge(@default_options, options)
     |> ensure_started
   end
 
@@ -112,7 +112,7 @@ defmodule Kcl.RecordProcessor do
   def update_largest_seq seq do
     if seq > largest_seq do
       update fn state ->
-        Dict.put state, :largest_seq, seq
+        Map.put state, :largest_seq, seq
       end
     end
   end
@@ -121,25 +121,25 @@ defmodule Kcl.RecordProcessor do
     if (current_time - last_checkpoint_time > state[:checkpoint_freq_seconds]) || force_checkpoint do
       checkpoint state[:largest_seq]
       update fn state ->
-        Dict.put state, :last_checkpoint_time, current_time
+        Map.put state, :last_checkpoint_time, current_time
       end
     end
   end
 
   def current_time do
-    Date.now |> Date.to_secs
+    Timex.now |> Timex.to_unix
   end
 
   def last_checkpoint_time do
-    Dict.get state, :last_checkpoint_time, 0
+    Map.get state, :last_checkpoint_time, 0
   end
 
   def largest_seq do
-    Dict.get state, :largest_seq, 0
+    Map.get state, :largest_seq, 0
   end
 
   def checkpoint seq do
-    try_checkpoint seq, Dict.get(state, :checkpoint_retries)
+    try_checkpoint seq, Map.get(state, :checkpoint_retries)
   end
 
   def try_checkpoint(seq, attempts_remaining) when attempts_remaining <= 0 do

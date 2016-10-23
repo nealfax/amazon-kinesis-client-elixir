@@ -3,7 +3,7 @@ defmodule Kcl.Configuration do
 
   def properties options do
       default_config
-      |> Dict.merge(options)
+      |> Keyword.merge(options)
       |> check_required
       |> Enum.map(fn {key, value} ->
         "#{make_prop_key(key)}=#{value}"
@@ -13,7 +13,7 @@ defmodule Kcl.Configuration do
 
   defp check_required options do
       Enum.each required_property_keys, fn key ->
-        if !Dict.get(options, key) do
+        if !Keyword.get(options, key) do
           raise "#{key} is required"
         end
       end
@@ -37,11 +37,11 @@ defmodule Kcl.Configuration do
   defp processing_language, do: "elixir/#{System.version}"
 
   def make_prop_key key do
-    Dict.get(default_key_map, key) || Inflex.camelize(key, :lower)
+    Keyword.get(default_key_map, key) || Inflex.camelize(key, :lower)
   end
 
   def required_property_keys do
-    Dict.keys(default_config)
+    Keyword.keys(default_config)
     |> Enum.concat [:stream_name]
   end
 
