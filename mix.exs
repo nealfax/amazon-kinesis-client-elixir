@@ -27,7 +27,7 @@ defmodule Kclex.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     [
-      {:exjsx, "~> 3.1.0"},
+      {:exjsx, "~> 3.2.1"},
       {:inflex, "~> 1.0.0"},
       {:radpath, "~> 0.0.5"},
       {:tempfile, github: "lowks/tempfile"},
